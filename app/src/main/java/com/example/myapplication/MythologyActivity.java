@@ -22,6 +22,7 @@ public class MythologyActivity extends AppCompatActivity {
     Button falseButton;
     Button resetButton;
     Question randomQuestion;
+    int score = 0;
     List<Question> questionList = new ArrayList<>();
 
     @Override
@@ -96,10 +97,13 @@ public class MythologyActivity extends AppCompatActivity {
 
                 ShowQuestion(randomQuestion);
 
-                resetButton.setVisibility(View.GONE);
+                if(!questionList.isEmpty()) {
 
-                trueButton.setVisibility(View.VISIBLE);
-                falseButton.setVisibility(View.VISIBLE);
+                    resetButton.setVisibility(View.GONE);
+
+                    trueButton.setVisibility(View.VISIBLE);
+                    falseButton.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -107,13 +111,30 @@ public class MythologyActivity extends AppCompatActivity {
 
     public Question RandomQuestionChoose(List<Question> questionList)
     {
+        if(questionList.isEmpty())
+        {
+            questionText.setText("Ваші бали: "+ score);
+            trueButton.setVisibility(View.GONE);
+            falseButton.setVisibility(View.GONE);
+            resetButton.setVisibility(View.GONE);
+            return null;
+        }
+
         Random random = new Random();
         randomQuestion = questionList.get(random.nextInt(questionList.size()));
         return randomQuestion;
+
     }
     public void ShowQuestion(Question question)
     {
-        questionText.setText(question.question);
+
+        if (question != null)
+        {
+            questionText.setText(question.question);
+        }
+
+
+
     }
     public void HideButtons()
     {
@@ -123,10 +144,8 @@ public class MythologyActivity extends AppCompatActivity {
     }
     public void CheckAnswer(boolean answer)
     {
-        if(randomQuestion.answer == answer) questionText.setText("Молодець");
+        if(randomQuestion.answer == answer) { questionText.setText("Молодець"); score++;}
         else questionText.setText("Відповідь неправильна");
     }
 
 }
-
-
