@@ -17,10 +17,13 @@ import java.util.List;
 import java.util.Random;
 
 public class MythologyActivity extends AppCompatActivity {
-
     TextView questionText;
     Button trueButton;
     Button falseButton;
+    Button resetButton;
+    Question randomQuestion;
+    List<Question> questionList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -34,6 +37,11 @@ public class MythologyActivity extends AppCompatActivity {
             return insets;
         });
 
+        questionText = findViewById(R.id.questionText);
+        trueButton = findViewById(R.id.trueButton);
+        falseButton = findViewById(R.id.falseButton);
+        resetButton = findViewById(R.id.resetButton);
+
         Question question1 = new Question();
         question1.question = "Чи був Одін Скандинавським богом?";
         question1.answer = true;
@@ -42,49 +50,83 @@ public class MythologyActivity extends AppCompatActivity {
         question2.question = "Чи був Посейдон Єгипетським богом?";
         question2.answer = false;
 
-        List<Question> questionList = new ArrayList<>();
+        Question question3 = new Question();
+        question3.question = "Чи був Ра Грецьким богом?";
+        question3.answer = false;
+
+        Question question4 = new Question();
+        question4.question = "Чи правда, що за скандинавськими міфами, перша людина вийшла з дерева?";
+        question4.answer = true;
+
+        Question question5 = new Question();
+        question5.question = "Чи правда, що Прометей віддав людям вогонь, за що був прикований до гори?";
+        question5.answer = true;
+
+
+
         questionList.add(question1);
         questionList.add(question2);
+        questionList.add(question3);
+        questionList.add(question4);
+        questionList.add(question5);
 
-        Random random = new Random();
-        Question randomQuestion = questionList.get(random.nextInt(questionList.size()));
+        randomQuestion = RandomQuestionChoose(questionList);
 
-        questionText = findViewById(R.id.questionText);
-        questionText.setText(randomQuestion.question);
+        ShowQuestion(randomQuestion);
 
-        trueButton = findViewById(R.id.trueButton);
-        falseButton = findViewById(R.id.falseButton);
 
-        trueButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean answer = true;
-                HideButtons();
-                CheckAnswer(answer, randomQuestion);
-            }
+
+
+        trueButton.setOnClickListener(v -> {
+            boolean answer = true;
+            HideButtons();
+            CheckAnswer(answer);
         });
 
-        falseButton.setOnClickListener(new View.OnClickListener() {
+        falseButton.setOnClickListener(v -> {
+            boolean answer = false;
+            HideButtons();
+            CheckAnswer(answer);
+        });
+        resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean answer = false;
-                HideButtons();
-                CheckAnswer(answer, randomQuestion);
+                questionList.remove(randomQuestion);
+                randomQuestion = RandomQuestionChoose(questionList);
+
+                ShowQuestion(randomQuestion);
+
+                resetButton.setVisibility(View.GONE);
+
+                trueButton.setVisibility(View.VISIBLE);
+                falseButton.setVisibility(View.VISIBLE);
             }
         });
 
     }
 
+    public Question RandomQuestionChoose(List<Question> questionList)
+    {
+        Random random = new Random();
+        randomQuestion = questionList.get(random.nextInt(questionList.size()));
+        return randomQuestion;
+    }
+    public void ShowQuestion(Question question)
+    {
+        questionText.setText(question.question);
+    }
     public void HideButtons()
     {
         trueButton.setVisibility(View.GONE);
         falseButton.setVisibility(View.GONE);
+        resetButton.setVisibility(View.VISIBLE);
     }
-    public void CheckAnswer(boolean answer, Question question)
+    public void CheckAnswer(boolean answer)
     {
-        if(question.answer == answer) questionText.setText("Молодець");
+        if(randomQuestion.answer == answer) questionText.setText("Молодець");
         else questionText.setText("Відповідь неправильна");
     }
+
 }
 
 
